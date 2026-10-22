@@ -12,10 +12,57 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      // 1. Corrige URL sem barra final no GitHub Pages (ex: /repositorio -> /repositorio/)
+      // para garantir que caminhos relativos como ./assets/... funcionem corretamente.
+      (function() {
+        var path = window.location.pathname;
+        if (path.split('/').length === 2 && !path.endsWith('/') && !path.includes('.')) {
+          window.location.replace(window.location.origin + path + '/' + window.location.search + window.location.hash);
+        }
+      })();
+
+      // 2. Proteção contra Tela Branca (Fallback para GitHub Pages não compilado):
+      // Se o site for hospedado no GitHub Pages diretamente da raiz (root) sem passar pelo Vite build,
+      // o navegador falha ao ler /src/main.tsx. Este script detecta a ausência de montagem e redireciona
+      // automaticamente para a pasta compilada /docs/ ou oferece alternativas.
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          var root = document.getElementById('root');
+          if (root && root.children.length === 0 && !window.__APP_LOADED__) {
+            var isGitHubPages = window.location.hostname.endsWith('github.io');
+            var inDocs = window.location.pathname.indexOf('/docs/') !== -1;
+            
+            // Se estiver no GitHub Pages raiz, tenta redirecionar para a pasta /docs/
+            if (isGitHubPages && !inDocs) {
+              var base = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/';
+              window.location.replace(base + 'docs/' + window.location.search + window.location.hash);
+              return;
+            }
+
+            // Se ainda assim não carregou, exibe tela de diagnóstico amigável
+            root.innerHTML = [
+              '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;padding:20px;font-family:sans-serif;">',
+                '<div style="max-width:540px;background:#fff;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.08);padding:32px;text-align:center;border:1px solid #e2e8f0;">',
+                  '<div style="width:64px;height:64px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;">🎵</div>',
+                  '<h2 style="font-size:22px;font-weight:700;color:#1e293b;margin:0 0 10px;">Poesia em Música - Turma 301</h2>',
+                  '<p style="font-size:14px;color:#64748b;margin:0 0 24px;line-height:1.6;">O aplicativo está pronto! Selecione uma das opções abaixo para abrir diretamente:</p>',
+                  '<div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">',
+                    '<a href="./docs/index.html" style="background:#1DB954;color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 4px 12px rgba(29,185,84,0.3);">🚀 Abrir Versão Compilada (docs)</a>',
+                    '<a href="./poesia-em-musica.html" style="background:#0284c7;color:#fff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 4px 12px rgba(2,132,199,0.3);">📄 Abrir Versão Direta (poesia-em-musica.html)</a>',
+                  '</div>',
+                  '<p style="font-size:12px;color:#94a3b8;margin:0;">Escola Mario Pederneiras &bull; Turma 301</p>',
+                '</div>',
+              '</div>'
+            ].join('');
+          }
+        }, 1800);
+      });
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-[#1DB954] selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
