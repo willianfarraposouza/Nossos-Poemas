@@ -1,0 +1,7 @@
+{
+  "name": "Poesia em Música - Escola Mario Pederneiras",
+  "description": "Galeria interativa dos poemas e canções criados pela Turma 301 (3º Ano) com Canva e Suno AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

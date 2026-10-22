@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poesia em Música - Escola Mario Pederneiras (Turma 301)</title>
+  <meta name="description" content="Projeto interdisciplinar de Poemas, Ilustrações no Canva e Músicas no Suno AI - Turma 301 (3º Ano).">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['"Fredoka"', 'cursive', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    .font-display {
+      font-family: 'Fredoka', cursive, sans-serif;
+    }
+    /* Barra de rolagem suave para tema claro */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 flex flex-col antialiased selection:bg-[#1DB954] selection:text-white">
+
+  <!-- ============================================================== -->
+  <!-- BARRA DE NAVEGAÇÃO                                             -->
+  <!-- ============================================================== -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 overflow-hidden shadow-xs flex items-center justify-center p-0.5 shrink-0">
+          <img 
+            src="/assets/aistudio/mario_pederneiras_logo_512.png" 
+            alt="Brasão Escola Mario Pederneiras" 
+            class="w-full h-full object-contain"
+          >
+        </div>
+        <div>
+          <h2 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+            <span>Escola Mario Pederneiras</span>
+          </h2>
+          <p class="text-[11px] text-slate-500 font-medium">
+            Turma 301 · 3º Ano do Ensino Fundamental
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Indicador de Professor Conectado (visível apenas após login) -->
+        <div id="teacherLoggedBar" class="hidden items-center gap-2">
+          <div class="text-right hidden sm:block">
+            <span class="text-[11px] font-bold text-emerald-800 block">Professor Conectado</span>
+            <span id="teacherEmailDisplay" class="text-[10px] text-slate-500 font-mono"></span>
+          </div>
+          <button 
+            onclick="alternarAbaAdmin()"
+            id="btnAlternarAba"
+            class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs"
+          >
+            Editar Músicas
+          </button>
+          <button 
+            onclick="logoutProfessor()"
+            class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 hover:text-red-700 text-slate-600 text-xs font-semibold border border-slate-200 transition"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- ============================================================== -->
+  <!-- 1. HEADER COM FOTO DA TURMA A 100% E TÍTULO NO CANTO INFERIOR  -->
+  <!-- ============================================================== -->
+  <header class="border-b border-slate-200 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-semibold text-emerald-800">
+            <span>Escola Mario Pederneiras</span>
+            <span>·</span>
+            <span>Turma 301 (3º Ano EF)</span>
+          </div>
+          <p class="text-sm text-slate-600 mt-0.5">
+            Mural de poesias, ilustrações e canções criadas em sala de aula
+          </p>
+        </div>
+      </div>
+
+      <!-- Espaço para a Foto da Turma (100% de Opacidade) com o Título no Canto Inferior Direito -->
+      <div class="relative w-full rounded-3xl overflow-hidden shadow-lg border-2 border-slate-200 aspect-[16/9] sm:aspect-[21/9] max-h-[460px] bg-slate-100">
+        <img 
+          id="turmaFotoFundo"
+          src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1600&q=80" 
+          alt="Foto da Turma 301 - Escola Mario Pederneiras" 
+          class="w-full h-full object-cover object-center"
+          style="opacity: 1;"
+        >
+        <!-- Título "Nossos Poemas" posicionado no canto inferior direito sobre a foto 100% visível -->
+        <div class="absolute bottom-3 right-3 sm:bottom-6 sm:right-6 text-right z-10 pointer-events-none">
+          <div class="bg-slate-900/85 backdrop-blur-md px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl border border-white/20 shadow-xl text-right inline-block">
+            <h1 class="text-2xl sm:text-4xl md:text-5xl font-display font-extrabold tracking-tight text-white drop-shadow-sm">
+              Nossos Poemas
+            </h1>
+            <p class="text-[11px] sm:text-xs font-semibold text-emerald-300 mt-0.5 tracking-wide">
+              Turma 301 · Escola Mario Pederneiras
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recado Acolhedor para as Famílias (Sem jargões de IA) -->
+      <div class="mt-7 bg-amber-50/70 border border-amber-200/80 rounded-2xl p-5 sm:p-6 text-slate-700 shadow-xs">
+        <div class="flex items-center gap-2 mb-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
+          <span>🌼</span>
+          <span>Queridas famílias, amigos e visitantes:</span>
+        </div>
+        <p class="text-sm sm:text-base leading-relaxed text-slate-700">
+          Sejam muito bem-vindos ao cantinho das nossas criações! Em sala de aula, cada dupla de alunos explorou o ritmo das rimas, 
+          sorteou <strong>3 palavras obrigatórias</strong> para inspirar suas histórias, desenhou a ilustração com muito carinho 
+          e transformou cada estrofe em uma canção especial.
+        </p>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2">
+          Convidamos todos a colocar o fone de ouvido, passear pelas faixas abaixo e se encantar com as vozes e versos das nossas crianças!
+        </p>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- SEÇÃO 2: PAINEL DE EDIÇÃO DO PROFESSOR (QUANDO AUTENTICADO)    -->
+  <!-- ============================================================== -->
+  <section id="adminSection" class="hidden max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xs mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">
+            Painel Administrativo da Turma 301
+          </span>
+          <h2 class="text-2xl font-display font-bold text-slate-900 mt-0.5">
+            Gerenciador de Músicas & Poemas
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Altere títulos, duplas de alunos, as 3 palavras-chave, capas do Canva ou links de áudio.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            onclick="abrirModalEdicao(null)"
+            class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-xs"
+          >
+            <span>+</span>
+            <span>Cadastrar Nova Música</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="adminListContainer" class="mt-6 space-y-3">
+        <!-- Lista de Músicas editáveis renderizada via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- SEÇÃO 3: GALERIA PÚBLICA (VISUALIZAÇÃO DE CARDS)               -->
+  <!-- ============================================================== -->
+  <main id="gallerySection" class="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1">
+    
+    <!-- Barra de Pesquisa -->
+    <div class="bg-white border border-slate-200 p-4 rounded-2xl shadow-xs mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 w-full sm:w-96">
+        <svg class="w-4 h-4 text-slate-400 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input 
+          id="searchInput" 
+          type="text" 
+          placeholder="Pesquisar por poema, alunos ou palavra..." 
+          class="bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none w-full py-1.5"
+          oninput="filtrarPoemas()"
+        >
+      </div>
+
+      <div class="flex items-center gap-2 text-xs text-slate-500">
+        <span>Total de faixas:</span>
+        <span id="poemCounter" class="bg-slate-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md border border-slate-200">3</span>
+      </div>
+    </div>
+
+    <!-- Grid de Cards em Tema Claro -->
+    <div id="poemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: LOGIN INSTITUCIONAL (@professor.gaspar.sc.gov.br)        -->
+  <!-- ============================================================== -->
+  <div id="loginModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+          🔒
+        </div>
+        <button onclick="fecharModalLogin()" class="text-slate-400 hover:text-slate-700 text-lg">
+          ✕
+        </button>
+      </div>
+
+      <h3 class="text-xl font-display font-bold text-slate-900 mb-1">
+        Acesso do Professor
+      </h3>
+      <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+        Área restrita aos professores da <strong>Escola Mario Pederneiras</strong> para edição das produções da Turma 301.
+      </p>
+
+      <div id="loginErrorMsg" class="hidden mb-4 bg-red-50 border border-red-200 text-red-700 px-3.5 py-2.5 rounded-xl text-xs"></div>
+
+      <form onsubmit="realizarLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            E-mail Institucional (@professor.gaspar.sc.gov.br)
+          </label>
+          <input 
+            id="inputLoginEmail"
+            type="email" 
+            required
+            value="willian.souza@professor.gaspar.sc.gov.br"
+            placeholder="seu.nome@professor.gaspar.sc.gov.br" 
+            class="w-full bg-slate-50 border border-slate-300 focus:border-emerald-600 focus:bg-white rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none transition"
+          >
+          <span class="text-[11px] text-slate-400 mt-1 block">
+            Exclusivo para e-mails terminados em <strong class="text-emerald-700">@professor.gaspar.sc.gov.br</strong>
+          </span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            Senha Escolar
+          </label>
+          <input 
+            id="inputLoginSenha"
+            type="password" 
+            placeholder="Digite sua senha..." 
+            class="w-full bg-slate-50 border border-slate-300 focus:border-emerald-600 focus:bg-white rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none transition"
+          >
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button
+            type="submit"
+            class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-xs"
+          >
+            Entrar no Painel de Edição
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: FORMULÁRIO DE EDIÇÃO / CADASTRO DE POEMA                -->
+  <!-- ============================================================== -->
+  <div id="editModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+      
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Edição Pedagógica</span>
+          <h3 id="editModalTitle" class="text-xl font-display font-bold text-slate-900 mt-0.5">Editar Música</h3>
+        </div>
+        <button onclick="fecharModalEdicao()" class="text-slate-400 hover:text-slate-700 text-lg">✕</button>
+      </div>
+
+      <form onsubmit="salvarEdicaoPoema(event)" class="p-6 overflow-y-auto space-y-4 flex-1 text-xs">
+        <input type="hidden" id="editPoemId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Título do Poema</label>
+            <input id="editTitle" type="text" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none focus:border-emerald-600">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Dupla de Alunos</label>
+            <input id="editAuthors" type="text" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none focus:border-emerald-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">As 3 Palavras Obrigatórias</label>
+          <div class="grid grid-cols-3 gap-2">
+            <input id="editWord1" type="text" placeholder="Palavra 1" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none">
+            <input id="editWord2" type="text" placeholder="Palavra 2" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none">
+            <input id="editWord3" type="text" placeholder="Palavra 3" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none">
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Ilustração de Capa -->
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+            <label class="block font-bold text-slate-700 mb-1">Ilustração da Dupla (Capa)</label>
+            <div class="flex items-center gap-2 mb-2">
+              <input type="file" id="editCoverFileInput" accept="image/*" class="hidden">
+              <label for="editCoverFileInput" class="cursor-pointer px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 shadow-xs inline-flex items-center gap-1">
+                📁 <span>Escolher Imagem do Computador</span>
+              </label>
+              <span id="coverFileNameBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full"></span>
+            </div>
+            <input id="editCoverUrl" type="text" placeholder="Ou cole o link da imagem: https://..." class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-emerald-600">
+          </div>
+
+          <!-- Estilo Musical -->
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Estilo / Ritmo Musical</label>
+            <input id="editGenre" type="text" placeholder="Ex: Bossa Nova Infantil, Pop Lúdico" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none">
+          </div>
+
+          <!-- ÁUDIO MP3 DIRETO -->
+          <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 space-y-2">
+            <label class="block font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <span>🎵</span>
+              <span>Arquivo MP3 da Canção (Áudio Direto do Computador)</span>
+              <span class="text-red-500 font-bold">*</span>
+            </label>
+            <p class="text-[11px] text-slate-500">
+              Selecione o arquivo MP3 gravado ou salvo no seu computador para tocar direto na galeria:
+            </p>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 pt-1">
+              <input type="file" id="editAudioFileInput" accept="audio/*,.mp3,.wav,.m4a,.ogg" class="hidden">
+              <label for="editAudioFileInput" class="cursor-pointer px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-xs inline-flex items-center justify-center gap-1.5">
+                📁 <span>Selecionar Arquivo MP3</span>
+              </label>
+              <span id="audioFileNameBadge" class="hidden text-xs bg-white border border-emerald-300 text-emerald-800 font-bold px-2.5 py-1 rounded-lg"></span>
+            </div>
+            <div class="pt-2">
+              <span class="text-[10px] text-slate-400 block mb-1">Ou cole uma URL direta de áudio caso prefira:</span>
+              <input id="editAudioUrl" type="text" placeholder="https://exemplo.com/musica.mp3" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-emerald-600">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Link Externo da Canção (Opcional)</label>
+            <input id="editSunoUrl" type="text" placeholder="https://exemplo.com/@turma301/musica" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs focus:bg-white focus:outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Estrofes do Poema (Separe estrofes com uma linha em branco)</label>
+          <textarea id="editStanzas" rows="6" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs leading-relaxed font-mono focus:bg-white focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="fecharModalEdicao()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-bold transition">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition shadow-xs">
+            Salvar Música
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: LEITURA COMPLETA DO POEMA (MODAL DO ALUNO)              -->
+  <!-- ============================================================== -->
+  <div id="poemModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      
+      <div class="bg-slate-50 p-6 border-b border-slate-200 flex items-start justify-between">
+        <div class="flex gap-4 items-center">
+          <img id="modalCover" src="" alt="Capa" class="w-20 h-20 rounded-2xl object-cover border border-slate-200 shadow-xs">
+          <div>
+            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wide">Letra do Poema</span>
+            <h3 id="modalTitle" class="text-xl sm:text-2xl font-display font-bold text-slate-900 mt-0.5"></h3>
+            <p id="modalAuthors" class="text-xs text-slate-500 mt-1">
+              <strong class="text-slate-700 font-semibold">Dupla:</strong> <span></span>
+            </p>
+          </div>
+        </div>
+
+        <button onclick="fecharModal()" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300 flex items-center justify-center text-sm transition">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-6 flex-1">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">3 Palavras Obrigatórias:</span>
+          <div id="modalWords" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+          <div id="modalStanzas" class="space-y-6 text-base sm:text-lg text-slate-800 leading-relaxed font-sans italic"></div>
+        </div>
+
+        <div class="bg-slate-100 p-4 rounded-2xl border border-slate-200 flex flex-col gap-2">
+          <div class="flex items-center justify-between text-xs text-slate-600">
+            <span class="font-semibold text-emerald-800">Ouvir Canção</span>
+            <span id="modalGenre" class="text-[10px] text-slate-400"></span>
+          </div>
+          <audio id="modalAudioPlayer" controls class="w-full h-8 rounded"></audio>
+        </div>
+      </div>
+
+      <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <a id="modalSunoLink" href="#" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-emerald-700 hover:text-emerald-900">
+          Ouvir Canção Completa ↗
+        </a>
+        <button onclick="fecharModal()" class="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-xs font-bold text-slate-700 transition">
+          Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- RODAPÉ COM ACESSO DISCRETO DO PROFESSOR                        -->
+  <!-- ============================================================== -->
+  <footer class="mt-auto border-t border-slate-200 bg-white py-8 px-4 text-xs text-slate-500">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+        <span class="font-semibold text-slate-800">Escola Mario Pederneiras</span>
+        <span class="text-slate-400">·</span>
+        <span>Turma 301 (3º Ano EF)</span>
+      </div>
+
+      <div class="flex items-center gap-4 text-slate-400 text-[11px]">
+        <span>Mural de Poesias e Canções</span>
+        <span>·</span>
+        <!-- Acesso discreto no rodapé para não atrair usuários maliciosos -->
+        <button 
+          id="btnFooterLogin"
+          onclick="abrirModalLogin()" 
+          class="text-slate-400/80 hover:text-slate-600 transition text-[11px] hover:underline"
+        >
+          Acesso do professor
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================== -->
+  <!-- JAVASCRIPT: DADOS, AUTENTICAÇÃO E RENDERIZAÇÃO                 -->
+  <!-- ============================================================== -->
+  <script>
+    /**
+     * DADOS DOS POEMAS DA TURMA 301:
+     * O professor pode alterar estes dados diretamente aqui ou através do painel de login!
+     */
+    let poemasData = [
+      {
+        id: "1",
+        title: "O Voo da Borboleta Estelar",
+        authors: "Ana Clara & Pedro Henrique",
+        words: ["Borboleta", "Estrela", "Amizade"],
+        coverUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        sunoUrl: "https://suno.com/@turma301/borboleta-estelar",
+        genre: "Bossa Nova Infantil",
+        stanzas: [
+          "Uma borboleta de asas de anil,\nVoou pelo céu mais bonito do Brasil.\nBateu asas perto da lua a brilhar,\nCom vontade infinita de dançar e sonhar.",
+          "Lá no alto encontrou uma estrela dourada,\nQue piscava contente na noite gelada.\n'Vem cá, minha amiga, me dê sua mão,\nVamos espalhar luz em cada coração!'",
+          "E assim nasceu a mais linda amizade,\nQue acende esperança em toda a cidade.\nBorboleta e estrela cantando a sorrir,\nUm laço sincero que nunca vai sumir!"
+        ]
+      },
+      {
+        id: "2",
+        title: "O Robô Amarelo do Jardim",
+        authors: "Lucas Gabriel & Sofia Maria",
+        words: ["Robô", "Girassol", "Alegria"],
+        coverUrl: "https://images.unsplash.com/photo-1546776310-eef45dd6d63c?auto=format&fit=crop&w=800&q=80",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        sunoUrl: "https://suno.com/@turma301/robo-amarelo",
+        genre: "Pop Lúdico Acústico",
+        stanzas: [
+          "No meio das flores vivia um robô,\nFeito de latinha que o vento soprou.\nEle tinha botões e antena a piscar,\nE gostava de água para regar.",
+          "Todo dia abraçava o belo girassol,\nQue abria pétalas voltadas pro sol.\nGirava e cantava em tom afinado,\nDeixando o jardim todinho encantado.",
+          "Sua maior engrenagem era a alegria,\nFuncionava tão bem de noite e de dia.\nQuem passava por perto queria aprender\nQue com carinho é tão bom viver!"
+        ]
+      },
+      {
+        id: "3",
+        title: "A Baleia e o Picolé Mágico",
+        authors: "Enzo Gabriel & Valentina Luz",
+        words: ["Baleia", "Picolé", "Aventura"],
+        coverUrl: "https://images.unsplash.com/photo-1568430462989-44163eb1752f?auto=format&fit=crop&w=800&q=80",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        sunoUrl: "https://suno.com/@turma301/baleia-picole",
+        genre: "Reggae Praiano Suave",
+        stanzas: [
+          "No fundo do oceano de azul sem igual,\nNadava feliz uma enorme baleia real.\nEla dava saltos, espirrava água no ar,\nConvidando os peixinhos para festejar.",
+          "Um dia encontrou em cima do mar\nUm doce picolé que não ia derreter nem queimar.\nEra de morango com sabor de maré,\nE dava cócegas na ponta do pé!",
+          "Começou então uma grande aventura,\nNavegando nas ondas cheias de doçura.\nCom risada e mistério em cada cantinho,\nO mar virou festa pra todo bichinho."
+        ]
+      }
+    ];
+
+    // Carregar dados salvos no localStorage (se existirem)
+    try {
+      const salvo = localStorage.getItem('poemasData_standalone');
+      if (salvo) poemasData = JSON.parse(salvo);
+    } catch(e) {}
+
+    let professorLogado = localStorage.getItem('professor_email') || null;
+    let visualizandoAdmin = false;
+
+    // Renderização dos cards da galeria
+    function renderizarGaleria(lista = poemasData) {
+      const container = document.getElementById("poemsGrid");
+      const counter = document.getElementById("poemCounter");
+      if (counter) counter.textContent = lista.length;
+
+      if (lista.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-400">
+            <p class="text-3xl mb-2">🔍</p>
+            <p class="text-sm font-semibold text-slate-700">Nenhum poema encontrado com esses termos.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = lista.map((item) => `
+        <article class="group bg-white border border-slate-200/90 rounded-3xl p-5 flex flex-col justify-between shadow-xs hover:shadow-md transition">
+          <div>
+            <div class="relative w-full aspect-square rounded-2xl overflow-hidden mb-4 bg-slate-100 border border-slate-200">
+              <img src="${item.coverUrl}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div class="absolute top-3 left-3">
+                <span class="text-[10px] font-bold bg-white/95 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 shadow-xs flex items-center gap-1">
+                  🎨 Ilustração da Dupla
+                </span>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <h3 class="text-base font-display font-bold text-slate-900 group-hover:text-emerald-700 transition">
+                ${item.title}
+              </h3>
+              <p class="text-xs text-slate-500 mt-1">
+                <strong class="text-slate-600">Dupla:</strong> ${item.authors}
+              </p>
+            </div>
+
+            <div class="mb-4">
+              <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">3 Palavras Sorteadas:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${item.words.map(w => w ? `
+                  <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    #${w}
+                  </span>
+                ` : '').join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-3 border-t border-slate-100">
+            <div class="bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <div class="flex items-center justify-between text-[10px] text-slate-500 mb-1 px-1">
+                <span class="text-emerald-700 font-semibold">Canção da Dupla</span>
+                <span>${item.genre || ''}</span>
+              </div>
+              <audio controls class="w-full h-8 rounded" src="${item.audioUrl}"></audio>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button 
+                onclick="abrirModal('${item.id}')"
+                class="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center justify-center gap-1 shadow-xs"
+              >
+                📖 <span>Ler Poema</span>
+              </button>
+
+              <a 
+                href="${item.sunoUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="w-full py-2 px-3 rounded-xl bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 font-medium text-xs transition flex items-center justify-center gap-1 border border-slate-300"
+              >
+                🎵 <span>Ouvir Música ↗</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // Renderização do Painel de Edição do Professor
+    function renderizarPainelAdmin() {
+      const container = document.getElementById("adminListContainer");
+      if (!container) return;
+
+      container.innerHTML = poemasData.map((item, idx) => `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white transition">
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-mono font-bold text-slate-400 w-5">#${idx + 1}</span>
+            <img src="${item.coverUrl}" class="w-12 h-12 rounded-xl object-cover border border-slate-200">
+            <div>
+              <h4 class="text-xs font-bold text-slate-900">${item.title}</h4>
+              <p class="text-[11px] text-slate-500">Dupla: ${item.authors}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="abrirModalEdicao('${item.id}')" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold border border-slate-300 transition">
+              Editar
+            </button>
+            <button onclick="removerPoema('${item.id}')" class="px-2.5 py-1.5 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition">
+              Excluir
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Autenticação com e-mail institucional
+    function abrirModalLogin() {
+      document.getElementById("loginModal").classList.remove("hidden");
+      document.getElementById("loginModal").classList.add("flex");
+    }
+
+    function fecharModalLogin() {
+      document.getElementById("loginModal").classList.add("hidden");
+      document.getElementById("loginModal").classList.remove("flex");
+      document.getElementById("loginErrorMsg").classList.add("hidden");
+    }
+
+    function realizarLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("inputLoginEmail").value.trim().toLowerCase();
+      const errBox = document.getElementById("loginErrorMsg");
+
+      // Validação estrita do domínio institucional
+      if (!/^[a-zA-Z0-9._%+-]+@professor\.gaspar\.sc\.gov\.br$/.test(email)) {
+        errBox.textContent = "Acesso restrito: É obrigatório utilizar um e-mail institucional terminado em @professor.gaspar.sc.gov.br";
+        errBox.classList.remove("hidden");
+        return;
+      }
+
+      professorLogado = email;
+      localStorage.setItem('professor_email', email);
+      fecharModalLogin();
+      atualizarEstadoLogin();
+      alternarAbaAdmin(true);
+    }
+
+    function logoutProfessor() {
+      professorLogado = null;
+      localStorage.removeItem('professor_email');
+      atualizarEstadoLogin();
+      alternarAbaAdmin(false);
+    }
+
+    function atualizarEstadoLogin() {
+      const loggedBar = document.getElementById("teacherLoggedBar");
+      const btnTrigger = document.getElementById("btnLoginTrigger");
+      const emailDisplay = document.getElementById("teacherEmailDisplay");
+
+      if (professorLogado) {
+        loggedBar.classList.remove("hidden");
+        loggedBar.classList.add("flex");
+        btnTrigger.classList.add("hidden");
+        emailDisplay.textContent = professorLogado;
+      } else {
+        loggedBar.classList.add("hidden");
+        loggedBar.classList.remove("flex");
+        btnTrigger.classList.remove("hidden");
+      }
+    }
+
+    function alternarAbaAdmin(forcarAdmin = null) {
+      if (forcarAdmin !== null) visualizandoAdmin = forcarAdmin;
+      else visualizandoAdmin = !visualizandoAdmin;
+
+      const adminSec = document.getElementById("adminSection");
+      const galSec = document.getElementById("gallerySection");
+      const btn = document.getElementById("btnAlternarAba");
+
+      if (visualizandoAdmin && professorLogado) {
+        adminSec.classList.remove("hidden");
+        galSec.classList.add("hidden");
+        if (btn) btn.textContent = "Ver Mural";
+        renderizarPainelAdmin();
+      } else {
+        adminSec.classList.add("hidden");
+        galSec.classList.remove("hidden");
+        if (btn) btn.textContent = "Editar Músicas";
+        renderizarGaleria();
+      }
+    }
+
+    // Modal de Edição / Cadastro
+    function abrirModalEdicao(id) {
+      const modal = document.getElementById("editModal");
+      const modalTitle = document.getElementById("editModalTitle");
+
+      if (id) {
+        const item = poemasData.find(p => p.id === id);
+        if (!item) return;
+        modalTitle.textContent = "Editar: " + item.title;
+        document.getElementById("editPoemId").value = item.id;
+        document.getElementById("editTitle").value = item.title;
+        document.getElementById("editAuthors").value = item.authors;
+        document.getElementById("editWord1").value = item.words[0] || '';
+        document.getElementById("editWord2").value = item.words[1] || '';
+        document.getElementById("editWord3").value = item.words[2] || '';
+        document.getElementById("editCoverUrl").value = item.coverUrl;
+        document.getElementById("editGenre").value = item.genre || '';
+        document.getElementById("editAudioUrl").value = item.audioUrl;
+        document.getElementById("editSunoUrl").value = item.sunoUrl;
+        document.getElementById("editStanzas").value = item.stanzas.join('\n\n');
+      } else {
+        modalTitle.textContent = "Nova Canção da Turma";
+        document.getElementById("editPoemId").value = String(Date.now());
+        document.getElementById("editTitle").value = '';
+        document.getElementById("editAuthors").value = '';
+        document.getElementById("editWord1").value = '';
+        document.getElementById("editWord2").value = '';
+        document.getElementById("editWord3").value = '';
+        document.getElementById("editCoverUrl").value = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80';
+        document.getElementById("editGenre").value = 'Canção Infantil';
+        document.getElementById("editAudioUrl").value = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+        document.getElementById("editSunoUrl").value = 'https://suno.com';
+        document.getElementById("editStanzas").value = 'Primeira estrofe...\n\nSegunda estrofe...';
+      }
+
+      const audioBadge = document.getElementById("audioFileNameBadge");
+      if (audioBadge) {
+        audioBadge.classList.add("hidden");
+        audioBadge.textContent = "";
+      }
+      const coverBadge = document.getElementById("coverFileNameBadge");
+      if (coverBadge) {
+        coverBadge.classList.add("hidden");
+        coverBadge.textContent = "";
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function fecharModalEdicao() {
+      document.getElementById("editModal").classList.add("hidden");
+      document.getElementById("editModal").classList.remove("flex");
+    }
+
+    function salvarEdicaoPoema(e) {
+      e.preventDefault();
+      const id = document.getElementById("editPoemId").value;
+      const title = document.getElementById("editTitle").value.trim();
+      const authors = document.getElementById("editAuthors").value.trim();
+      const words = [
+        document.getElementById("editWord1").value.trim(),
+        document.getElementById("editWord2").value.trim(),
+        document.getElementById("editWord3").value.trim()
+      ];
+      const coverUrl = document.getElementById("editCoverUrl").value.trim();
+      const genre = document.getElementById("editGenre").value.trim();
+      const audioUrl = document.getElementById("editAudioUrl").value.trim();
+      const sunoUrl = document.getElementById("editSunoUrl").value.trim();
+      const stanzasRaw = document.getElementById("editStanzas").value;
+      const stanzas = stanzasRaw.split(/\n\s*\n/).filter(s => s.trim().length > 0);
+
+      const existingIdx = poemasData.findIndex(p => p.id === id);
+      const novoObjeto = { id, title, authors, words, coverUrl, genre, audioUrl, sunoUrl, stanzas };
+
+      if (existingIdx >= 0) {
+        poemasData[existingIdx] = novoObjeto;
+      } else {
+        poemasData.unshift(novoObjeto);
+      }
+
+      try {
+        localStorage.setItem('poemasData_standalone', JSON.stringify(poemasData));
+      } catch(e) {}
+
+      fecharModalEdicao();
+      renderizarPainelAdmin();
+      renderizarGaleria();
+    }
+
+    function removerPoema(id) {
+      if (confirm("Deseja realmente remover esta música da turma?")) {
+        poemasData = poemasData.filter(p => p.id !== id);
+        try {
+          localStorage.setItem('poemasData_standalone', JSON.stringify(poemasData));
+        } catch(e) {}
+        renderizarPainelAdmin();
+        renderizarGaleria();
+      }
+    }
+
+    function filtrarPoemas() {
+      const termo = document.getElementById("searchInput").value.toLowerCase().trim();
+      if (!termo) {
+        renderizarGaleria(poemasData);
+        return;
+      }
+      const filtrados = poemasData.filter(p => 
+        p.title.toLowerCase().includes(termo) ||
+        p.authors.toLowerCase().includes(termo) ||
+        p.words.some(w => w.toLowerCase().includes(termo))
+      );
+      renderizarGaleria(filtrados);
+    }
+
+    function tocarPrimeiraFaixa() {
+      if (poemasData.length > 0) {
+        abrirModal(poemasData[0].id);
+        const player = document.getElementById("modalAudioPlayer");
+        if (player) player.play();
+      }
+    }
+
+    function abrirModal(id) {
+      const poema = poemasData.find(p => p.id === id);
+      if (!poema) return;
+
+      document.getElementById("modalCover").src = poema.coverUrl;
+      document.getElementById("modalTitle").textContent = poema.title;
+      document.getElementById("modalAuthors").querySelector("span").textContent = poema.authors;
+      document.getElementById("modalGenre").textContent = poema.genre || '';
+
+      const wordsContainer = document.getElementById("modalWords");
+      wordsContainer.innerHTML = poema.words.map(w => w ? `
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+          #${w}
+        </span>
+      ` : '').join('');
+
+      const stanzasContainer = document.getElementById("modalStanzas");
+      stanzasContainer.innerHTML = poema.stanzas.map(est => `
+        <div class="whitespace-pre-line border-l-3 border-emerald-500 pl-4 py-1">
+          ${est}
+        </div>
+      `).join('');
+
+      const modalAudio = document.getElementById("modalAudioPlayer");
+      modalAudio.src = poema.audioUrl;
+      document.getElementById("modalSunoLink").href = poema.sunoUrl;
+
+      const modal = document.getElementById("poemModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+      document.body.style.overflow = "hidden";
+    }
+
+    function fecharModal() {
+      const modal = document.getElementById("poemModal");
+      const modalAudio = document.getElementById("modalAudioPlayer");
+      if (modalAudio) modalAudio.pause();
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.style.overflow = "";
+    }
+
+    document.getElementById("poemModal").addEventListener("click", function(e) {
+      if (e.target === this) fecharModal();
+    });
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        fecharModal();
+        fecharModalLogin();
+        fecharModalEdicao();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      atualizarEstadoLogin();
+      renderizarGaleria();
+
+      const audioInput = document.getElementById("editAudioFileInput");
+      if (audioInput) {
+        audioInput.addEventListener("change", function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const objectUrl = URL.createObjectURL(file);
+            document.getElementById("editAudioUrl").value = objectUrl;
+            const badge = document.getElementById("audioFileNameBadge");
+            if (badge) {
+              badge.textContent = "✓ MP3: " + file.name;
+              badge.classList.remove("hidden");
+            }
+          }
+        });
+      }
+
+      const coverInput = document.getElementById("editCoverFileInput");
+      if (coverInput) {
+        coverInput.addEventListener("change", function(e) {
+          const file = e.target.files[0];
+          if (file) {
+            const objectUrl = URL.createObjectURL(file);
+            document.getElementById("editCoverUrl").value = objectUrl;
+            const badge = document.getElementById("coverFileNameBadge");
+            if (badge) {
+              badge.textContent = "✓ Imagem: " + file.name;
+              badge.classList.remove("hidden");
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
