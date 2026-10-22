@@ -42,6 +42,7 @@ import {
   saveClassPhoto,
   getClassPhoto
 } from './utils/mediaStorage.ts';
+import schoolLogo from './assets/images/mario_pederneiras_logo_512.png';
 
 const STORAGE_KEY_POEMS = 'mario_pederneiras_turma301_poems';
 const STORAGE_KEY_PHOTO = 'mario_pederneiras_turma301_class_photo';
@@ -601,7 +602,7 @@ export default function App() {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 overflow-hidden shadow-xs flex items-center justify-center p-0.5 shrink-0">
               <img 
-                src="/assets/aistudio/mario_pederneiras_logo_512.png" 
+                src={schoolLogo} 
                 alt="Brasão Escola Mario Pederneiras" 
                 className="w-full h-full object-contain"
               />
